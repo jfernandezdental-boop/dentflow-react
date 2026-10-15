@@ -520,7 +520,7 @@ export default function Citas() {
                         <div
                           key={c.id}
                           className="cw-appt"
-                          style={{ top, height: hgt, background: c.doctores?.color || "#076E6E" }}
+                          style={{ top, height: hgt, background: c.doctores?.color || "#4A6C7C" }}
                           title={`${c.hora_inicio?.slice(0, 5)} · ${c.pacientes?.nombre || "?"}`}
                           onClick={(e2) => { e2.stopPropagation(); abrirEditar(c); }}
                         >

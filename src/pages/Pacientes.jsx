@@ -3,12 +3,12 @@ import { supabase } from "../lib/supabaseClient";
 import { useAuth } from "../lib/AuthContext";
 
 const PAV_COLORS = [
-  ["#E4F4F0", "#076E6E"],
-  ["#FEF3DC", "#C47B0A"],
-  ["#FDEAEC", "#C0394A"],
-  ["#E6EEFF", "#2A5CB8"],
-  ["#F3E8FF", "#7C3AED"],
-  ["#FFF0E6", "#C2631A"],
+  ["#E3ECF0", "#4A6C7C"],
+  ["#E3EEE8", "#3F6B55"],
+  ["#ECECEA", "#5C5C5C"],
+  ["#F6E7E9", "#A24655"],
+  ["#F7EFDD", "#8A5E14"],
+  ["#DCE8E1", "#3A5766"],
 ];
 
 function getInitials(name) {

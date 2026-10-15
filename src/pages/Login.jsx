@@ -29,7 +29,7 @@ export default function Login() {
         alignItems: "center",
         justifyContent: "center",
         background:
-          "radial-gradient(circle at 20% 20%, #0d2b2b 0%, var(--ink) 55%)",
+          "radial-gradient(circle at 18% 12%, #FFFFFF 0%, var(--bg) 45%, #D5E2DB 100%)",
         padding: 20,
       }}
     >
