@@ -2,6 +2,7 @@ import { useState, lazy, Suspense } from "react";
 import { useAuth } from "./lib/AuthContext";
 import { navSectionsForRole } from "./lib/modules";
 import Login from "./pages/Login";
+import Landing from "./pages/Landing";
 
 // Carga perezosa: cada módulo se descarga solo cuando el usuario lo abre,
 // no todo junto al entrar al sistema. Esto importa cada vez más a medida
@@ -108,6 +109,7 @@ function Shell() {
 
 export default function App() {
   const { isLoggedIn, loadingSession } = useAuth();
+  const [verLogin, setVerLogin] = useState(false);
 
   if (loadingSession) {
     return (
@@ -117,5 +119,6 @@ export default function App() {
     );
   }
 
-  return isLoggedIn ? <Shell /> : <Login />;
+  if (isLoggedIn) return <Shell />;
+  return verLogin ? <Login onBack={() => setVerLogin(false)} /> : <Landing onLogin={() => setVerLogin(true)} />;
 }

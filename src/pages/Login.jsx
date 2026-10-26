@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../lib/AuthContext";
 
-export default function Login() {
+export default function Login({ onBack }) {
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -38,6 +38,11 @@ export default function Login() {
         className="login-box"
         style={{ position: "static", transform: "none" }}
       >
+        {onBack && (
+          <button type="button" className="txt-sm" onClick={onBack} style={{ background: "none", border: "none", color: "var(--muted)", cursor: "pointer", marginBottom: 14 }}>
+            ← Volver al inicio
+          </button>
+        )}
         <div className="lb-title">
           Dent<em>Flow</em> Pro
         </div>
