@@ -52,10 +52,10 @@ export default function Landing({ onLogin }) {
           <p>Únete al programa de control dental mensual para prevenir urgencias, mantener tu sonrisa sana y ahorrar en tratamientos con seguimiento profesional personalizado.</p>
           <div className="lp-cta">
             <a className="lp-btn lp-btn-lg" href="#contacto">Inscribirme por $24.900/mes ✦</a>
-            <a className="lp-btn lp-btn-out lp-btn-lg" href="#programa">Conocer el programa</a>
+            <button type="button" className="lp-btn lp-btn-out lp-btn-lg" onClick={onLogin}>Conocer el programa</button>
           </div>
         </div>
-        <img className="lp-hero-img" src="/hero.jpg" alt="Dra. Jessenia Fernandez, implantóloga, en su consulta" />
+        <img className="lp-hero-img" src="/hero.jpg" alt="Dra. Jessenia Fernandez, implantóloga y rehabilitadora oral" />
       </section>
 
       <section className="lp-cards" id="programa">
