@@ -15,6 +15,9 @@ const Presupuesto = lazy(() => import("./pages/Presupuesto"));
 const Inventario = lazy(() => import("./pages/Inventario"));
 const Odontograma = lazy(() => import("./pages/Odontograma"));
 const Contabilidad = lazy(() => import("./pages/Contabilidad"));
+const Laboratorio = lazy(() => import("./pages/Laboratorio"));
+const Recetario = lazy(() => import("./pages/Recetario"));
+const Notificaciones = lazy(() => import("./pages/Notificaciones"));
 const Proximamente = lazy(() => import("./pages/Proximamente"));
 
 function getInitials(name) {
@@ -43,6 +46,9 @@ function Shell() {
     if (mod === "inventario") return <Inventario />;
     if (mod === "odontograma") return <Odontograma />;
     if (mod === "contabilidad") return <Contabilidad />;
+    if (mod === "laboratorio") return <Laboratorio />;
+    if (mod === "recetario") return <Recetario />;
+    if (mod === "notificaciones") return <Notificaciones />;
     const item = sections.flatMap((s) => s.items).find((i) => i.mod === mod);
     return <Proximamente label={item?.label || mod} />;
   }
