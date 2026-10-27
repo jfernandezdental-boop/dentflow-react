@@ -20,7 +20,7 @@ export const NAV_SECTIONS = [
       { mod: "recetario", icon: "💊", label: "Recetario", ready: true },
       { mod: "presupuesto", icon: "💰", label: "Presupuesto", ready: true },
       { mod: "laboratorio", icon: "🔬", label: "Laboratorio", ready: true },
-      { mod: "imagenes", icon: "🖼️", label: "Imágenes", ready: false },
+      { mod: "imagenes", icon: "🖼️", label: "Imágenes", ready: true },
     ],
   },
   {
@@ -28,7 +28,7 @@ export const NAV_SECTIONS = [
     items: [
       { mod: "contabilidad", icon: "💳", label: "Contabilidad", ready: true },
       { mod: "inventario", icon: "📦", label: "Inventario", ready: true },
-      { mod: "rrhh", icon: "👔", label: "RRHH · Nómina", ready: false },
+      { mod: "rrhh", icon: "👔", label: "RRHH · Nómina", ready: true },
       { mod: "notificaciones", icon: "🔔", label: "Notificaciones", ready: true },
       { mod: "configuracion", icon: "⚙️", label: "Configuración", ready: true },
     ],
