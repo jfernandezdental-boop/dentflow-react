@@ -258,11 +258,11 @@ export default function Recetario() {
     return recetas.filter((r) => [r.numero, nombrePac[r.paciente_id], r.diagnostico_desc, r.diagnostico_cie10].some((s) => (s || "").toLowerCase().includes(t)));
   }, [recetas, q, nombrePac]);
 
-  if (!consultorioId) return <div className="mod"><div className="card"><div className="empty"><div className="ic">🏥</div><div className="t">Sin clínica asociada</div></div></div></div>;
-  if (rolUi === "personal" || rolUi === "paciente") return <div className="mod"><div className="card"><div className="empty"><div className="ic">🔒</div><div className="t">Sin acceso</div><div className="s">El recetario es solo para el equipo clínico.</div></div></div></div>;
+  if (!consultorioId) return <div className="pgm"><div className="card"><div className="empty"><div className="ic">🏥</div><div className="t">Sin clínica asociada</div></div></div></div>;
+  if (rolUi === "personal" || rolUi === "paciente") return <div className="pgm"><div className="card"><div className="empty"><div className="ic">🔒</div><div className="t">Sin acceso</div><div className="s">El recetario es solo para el equipo clínico.</div></div></div></div>;
 
   return (
-    <div className="mod">
+    <div className="pgm">
       <div className="mh">
         <div>
           <div className="mh-t">💊 Recetario odontológico</div>
@@ -305,7 +305,7 @@ export default function Recetario() {
           <div className="card">
             <div className="card-b">
               <div className="sec-t">Paciente y prescriptor</div>
-              <div className="g2">
+              <div className="cg2">
                 <div className="fl"><label>Paciente *</label>
                   <select className="fi sm" value={f.paciente_id} onChange={(e) => set("paciente_id", e.target.value)}>
                     <option value="">Seleccionar…</option>
@@ -315,7 +315,7 @@ export default function Recetario() {
                 <div className="fl"><label>Fecha</label><input className="fi sm" type="date" value={f.fecha} onChange={(e) => set("fecha", e.target.value)} /></div>
               </div>
               {pac && <div className="txt-muted" style={{ margin: "-4px 0 12px" }}>{[pac.cedula && "CI " + pac.cedula, edadDesde(pac.fecha_nac) && edadDesde(pac.fecha_nac) + " años", SEXO[pac.genero]].filter(Boolean).join(" · ")}{pac.alergias ? ` · ⚠️ Alergias: ${pac.alergias}` : ""}</div>}
-              <div className="g3">
+              <div className="cg3">
                 <div className="fl"><label>Doctor</label>
                   <select className="fi sm" value={f.doctor_id} onChange={(e) => onDoctor(e.target.value)}>
                     <option value="">—</option>
@@ -325,7 +325,7 @@ export default function Recetario() {
                 <div className="fl"><label>Profesional *</label><input className="fi sm" value={f.profesional} onChange={(e) => set("profesional", e.target.value)} /></div>
                 <div className="fl"><label>Registro (MSP/Senescyt)</label><input className="fi sm" value={f.registro} onChange={(e) => set("registro", e.target.value)} /></div>
               </div>
-              <div className="g3">
+              <div className="cg3">
                 <div className="fl"><label>Peso (kg)</label><input className="fi sm mono" type="number" min="0" value={f.peso} onChange={(e) => set("peso", e.target.value)} /></div>
                 <div className="fl"><label>CIE-10</label><input className="fi sm mono" placeholder="K02.1" value={f.dx_cie10} onChange={(e) => set("dx_cie10", e.target.value.toUpperCase())} /></div>
                 <div className="fl"><label>Validez</label>
@@ -342,9 +342,9 @@ export default function Recetario() {
               <div className="vm" style={{ marginBottom: 14 }}>
                 {VADEMECUM.map((m) => <button key={m.nombre_generico} type="button" onClick={() => addMed(m)}>+ {m.nombre_generico.split(" +")[0]} {m.concentracion.split("/")[0]}</button>)}
               </div>
-              <div className="rx-row rx-row-h"><span>Genérico</span><span>Concentración</span><span>Forma</span><span>Cant.</span><span>Vía</span><span /></div>
+              <div className="rxr rxr-h"><span>Genérico</span><span>Concentración</span><span>Forma</span><span>Cant.</span><span>Vía</span><span /></div>
               {f.meds.map((m, i) => (
-                <div key={i} className="rx-row" style={{ paddingBottom: 8, borderBottom: i < f.meds.length - 1 ? "1px dashed var(--border)" : "none" }}>
+                <div key={i} className="rxr" style={{ paddingBottom: 8, borderBottom: i < f.meds.length - 1 ? "1px dashed var(--border)" : "none" }}>
                   <input className="fi sm" placeholder="Nombre genérico" value={m.nombre_generico} onChange={(e) => setMed(i, "nombre_generico", e.target.value)} />
                   <input className="fi sm" placeholder="500 mg" value={m.concentracion} onChange={(e) => setMed(i, "concentracion", e.target.value)} />
                   <input className="fi sm" placeholder="Cápsulas" value={m.forma_farmaceutica} onChange={(e) => setMed(i, "forma_farmaceutica", e.target.value)} />

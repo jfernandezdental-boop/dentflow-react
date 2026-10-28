@@ -179,7 +179,9 @@ export default function Dashboard({ irA }) {
     return () => { vivo = false; };
   }, [cid, hoy, rolUi, profile?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const nombre = (profile?.nombre || "").split(" ")[0];
+  const partesNombre = (profile?.nombre || "").split(/\s+/).filter(Boolean);
+  const esTitulo = (t) => /^(dr|dra|lic|od|odont|sr|sra)\.?$/i.test(t);
+  const nombre = partesNombre.length > 1 && esTitulo(partesNombre[0]) ? `${partesNombre[0]} ${partesNombre[1]}` : partesNombre[0] || "";
   const h = horaEnZona(timezone);
   const saludo = h < 12 ? "Buenos días" : h < 19 ? "Buenas tardes" : "Buenas noches";
   const cargando = d === null;
@@ -193,10 +195,10 @@ export default function Dashboard({ irA }) {
     esClinico && d.aceptados > 0 && { n: d.aceptados, c: "t", t: "presupuestos aceptados por facturar", s: "Pendientes de cobro", mod: "presupuesto" },
   ].filter(Boolean) : [];
 
-  if (!cid) return <div className="mod"><div className="card"><div className="empty"><div className="ic">🏥</div><div className="t">Sin clínica asociada</div><div className="s">Tu usuario no está vinculado a un consultorio.</div></div></div></div>;
+  if (!cid) return <div className="pgm"><div className="card"><div className="empty"><div className="ic">🏥</div><div className="t">Sin clínica asociada</div><div className="s">Tu usuario no está vinculado a un consultorio.</div></div></div></div>;
 
   return (
-    <div className="mod">
+    <div className="pgm">
       <div className="dash-hi">
         <div>
           <div className="hi">{new Intl.DateTimeFormat("es-EC", { timeZone: timezone, weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(new Date())}</div>

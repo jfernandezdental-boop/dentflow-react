@@ -92,7 +92,7 @@ function SubirModal({ open, pacientes, doctores, consultorioId, userId, paciente
           </div>
         )}
 
-        <div className="g2">
+        <div className="cg2">
           <div className="fl"><label>Paciente *</label>
             <select className="fi sm" value={f.paciente_id} onChange={(e) => set("paciente_id", e.target.value)}>
               <option value="">Seleccionar…</option>{pacientes.map((p) => <option key={p.id} value={p.id}>{p.nombre}</option>)}
@@ -100,7 +100,7 @@ function SubirModal({ open, pacientes, doctores, consultorioId, userId, paciente
           <div className="fl"><label>Tipo</label>
             <select className="fi sm" value={f.tipo} onChange={(e) => set("tipo", e.target.value)}>{TIPOS.map((t) => <option key={t.v} value={t.v}>{t.label}</option>)}</select></div>
         </div>
-        <div className="g3">
+        <div className="cg3">
           <div className="fl"><label>Fecha de toma</label><input className="fi sm" type="date" value={f.fecha_toma} onChange={(e) => set("fecha_toma", e.target.value)} /></div>
           <div className="fl"><label>Pieza(s)</label><input className="fi sm mono" placeholder="36, 37" value={f.pieza} onChange={(e) => set("pieza", e.target.value)} /></div>
           <div className="fl"><label>Doctor</label>
@@ -197,7 +197,7 @@ function Visor({ lista, idx, setIdx, urls, pacientes, doctores, puedeBorrar, onC
         <div className="mh-t" style={{ fontSize: 17 }}>{pac?.nombre || "Paciente"}</div>
         <div className="txt-muted" style={{ marginBottom: 14 }}>{TIPO_LABEL[img.tipo] || "Imagen"} · {fmtFecha(img.fecha_toma)}{doc ? ` · ${doc.nombre}` : ""}{img.size_bytes ? ` · ${mb(img.size_bytes)}` : ""}</div>
         <div className="fl" style={{ marginBottom: 10 }}><label>Título</label><input className="fi sm" value={form.titulo} onChange={(e) => setForm({ ...form, titulo: e.target.value })} /></div>
-        <div className="g2">
+        <div className="cg2">
           <div className="fl"><label>Tipo</label><select className="fi sm" value={form.tipo} onChange={(e) => setForm({ ...form, tipo: e.target.value })}>{TIPOS.map((t) => <option key={t.v} value={t.v}>{t.label}</option>)}</select></div>
           <div className="fl"><label>Pieza(s)</label><input className="fi sm mono" value={form.pieza} onChange={(e) => setForm({ ...form, pieza: e.target.value })} /></div>
         </div>
@@ -268,10 +268,10 @@ export default function Imagenes() {
   const toggleSel = (id, e) => { e.stopPropagation(); setSel((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id].slice(-2))); };
   const seleccionadas = sel.map((id) => imgs.find((x) => x.id === id)).filter(Boolean);
 
-  if (!consultorioId) return <div className="mod"><div className="card"><div className="empty"><div className="ic">🏥</div><div className="t">Sin clínica asociada</div></div></div></div>;
+  if (!consultorioId) return <div className="pgm"><div className="card"><div className="empty"><div className="ic">🏥</div><div className="t">Sin clínica asociada</div></div></div></div>;
 
   return (
-    <div className="mod">
+    <div className="pgm">
       <div className="mh">
         <div>
           <div className="mh-t">🖼️ Imágenes clínicas</div>

@@ -92,7 +92,7 @@ function TrabajoModal({ open, editing, pacientes, doctores, consultorioId, userI
         <div className="appt-box-title">{editing ? "✏️ Editar trabajo" : "🔬 Nuevo trabajo de laboratorio"}</div>
         <div className="appt-box-sub">Registra lo enviado al laboratorio y su fecha de entrega</div>
 
-        <div className="g2">
+        <div className="cg2">
           <div className="fl">
             <label>Paciente *</label>
             <select className="fi sm" value={form.paciente_id} onChange={(e) => set("paciente_id", e.target.value)}>
@@ -114,7 +114,7 @@ function TrabajoModal({ open, editing, pacientes, doctores, consultorioId, userI
           <input className="fi sm" placeholder="Ej. Corona metal-porcelana pieza 21, color A2" value={form.descripcion} onChange={(e) => set("descripcion", e.target.value)} />
         </div>
 
-        <div className="g2">
+        <div className="cg2">
           <div className="fl"><label>Laboratorio</label><input className="fi sm" placeholder="Nombre del laboratorio" value={form.laboratorio} onChange={(e) => set("laboratorio", e.target.value)} /></div>
           <div className="fl">
             <label>Estado</label>
@@ -124,7 +124,7 @@ function TrabajoModal({ open, editing, pacientes, doctores, consultorioId, userI
           </div>
         </div>
 
-        <div className="g2">
+        <div className="cg2">
           <div className="fl"><label>Fecha de envío</label><input className="fi sm" type="date" value={form.fecha_envio} onChange={(e) => set("fecha_envio", e.target.value)} /></div>
           <div className="fl"><label>Fecha de entrega</label><input className="fi sm" type="date" value={form.fecha_entrega} onChange={(e) => set("fecha_entrega", e.target.value)} /></div>
         </div>
@@ -220,11 +220,11 @@ export default function Laboratorio() {
   async function alGuardar() { cerrar(); await cargar(); }
 
   if (!consultorioId) {
-    return <div className="mod"><div className="card"><div className="empty"><div className="ic">🏥</div><div className="t">Sin clínica asociada</div><div className="s">Tu usuario no está vinculado a un consultorio.</div></div></div></div>;
+    return <div className="pgm"><div className="card"><div className="empty"><div className="ic">🏥</div><div className="t">Sin clínica asociada</div><div className="s">Tu usuario no está vinculado a un consultorio.</div></div></div></div>;
   }
 
   return (
-    <div className="mod">
+    <div className="pgm">
       <div className="mh">
         <div>
           <div className="mh-t">🔬 Laboratorio y trabajos</div>

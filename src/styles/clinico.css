@@ -1,6 +1,6 @@
 /* Sistema de diseño de los módulos clínicos (Laboratorio, Recetario, Notificaciones…)
    Reutiliza las variables y componentes de global.css; solo agrega lo propio. */
-.mod{padding:28px;max-width:1500px}
+.pgm{padding:28px;max-width:1500px}
 .mh{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap}
 .mh-t{font-family:'Outfit',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.015em;color:var(--ink)}
 .mh-s{font-size:13px;color:var(--muted);margin-top:3px}
@@ -58,11 +58,11 @@
 @media(max-width:1100px){.rx-grid{grid-template-columns:1fr}}
 .sec-t{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin:2px 0 10px;display:flex;align-items:center;gap:8px}
 .sec-t::after{content:'';flex:1;height:1px;background:var(--border)}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px}
-.g2 .fl,.g3 .fl{margin:0}
-.rx-row{display:grid;grid-template-columns:1.6fr 1fr 1fr .7fr .7fr 28px;gap:6px;align-items:center;margin-bottom:6px}
-.rx-row-h{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.cg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.cg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px}
+.cg2 .fl,.cg3 .fl{margin:0}
+.rxr{display:grid;grid-template-columns:1.6fr 1fr 1fr .7fr .7fr 28px;gap:6px;align-items:center;margin-bottom:6px}
+.rxr-h{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .rx-pos{grid-column:1 / span 5;margin-bottom:8px}
 .rx-x{border:none;background:var(--rose-pale);color:var(--rose);width:26px;height:26px;border-radius:8px;cursor:pointer;font-weight:700}
 .vm{display:flex;gap:6px;flex-wrap:wrap}
@@ -228,7 +228,7 @@
 
 /* ── Dashboard ── */
 .dash-hi{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px}
-.dash-hi .hi{font-size:12.5px;color:var(--muted);font-weight:600;text-transform:capitalize}
+.dash-hi .hi{font-size:12.5px;color:var(--muted);font-weight:600;text-transform:none}.dash-hi .hi::first-letter{text-transform:uppercase}
 .qa{display:flex;gap:8px;flex-wrap:wrap}
 .kpi-s{font-size:11px;color:var(--muted);margin-top:3px}
 .dash-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;margin-bottom:16px;align-items:start}
@@ -252,3 +252,38 @@
 .al .n{font-family:'JetBrains Mono',monospace;font-weight:700;min-width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12.5px}
 .al .n.r{background:var(--rose-pale);color:var(--rose)}.al .n.a{background:var(--amber-pale);color:var(--amber)}.al .n.g{background:var(--green-pale);color:var(--green)}.al .n.t{background:var(--teal-pale);color:var(--teal2)}
 .al small{display:block;color:var(--muted);font-size:11px}
+
+/* ── Filas con columnas propias ── */
+.dx-row{grid-template-columns:110px 1fr 70px 120px 30px;align-items:end}
+.evo-row{grid-template-columns:90px 150px 1fr 30px;align-items:end}
+
+/* ── Responsive de los módulos clínicos ── */
+@media(max-width:860px){
+  .pgm{padding:14px}
+  .mh-t{font-size:19px}
+  .mh-a{width:100%}
+  .mh-a .cal-view-toggle{max-width:100%;overflow-x:auto}
+  .toolbar .search{max-width:none;flex:1 1 100%}
+  .toolbar select.fi{max-width:none;width:100%!important}
+  .cmp{grid-template-columns:1fr;grid-template-rows:1fr 1fr}
+  .hc-st{margin-left:0;width:100%;justify-content:space-around}
+  .rx-paper{position:static;padding:22px 18px}
+  .kb{grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:minmax(260px,82%);scroll-snap-type:x mandatory}
+  .kb-col{scroll-snap-align:start}
+  .dash-hi{align-items:flex-start}
+  .qa{width:100%}.qa .btn-sm{flex:1}
+}
+@media(max-width:620px){
+  .cg2,.cg3{grid-template-columns:1fr}
+  .dx-row,.evo-row{grid-template-columns:1fr 1fr}
+  .dx-row>.rx-x,.evo-row>.rx-x{grid-column:1 / -1;width:100%}
+  .rxr{grid-template-columns:1fr 1fr}
+  .rxr-h{display:none}
+  .rxr .rx-pos{grid-column:1 / -1}
+  .rxr .rx-x{grid-column:1 / -1;width:100%}
+  .hd-row{grid-template-columns:62px 1fr 1fr}
+  .kv{grid-template-columns:1fr}
+  .emp-grid{grid-template-columns:1fr}
+  .vw-bar{bottom:8px;padding:6px 8px}
+  .vw-bar input[type=range]{width:60px}
+}

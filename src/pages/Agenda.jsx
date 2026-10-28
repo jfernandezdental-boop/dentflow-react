@@ -139,11 +139,11 @@ export default function Agenda() {
     return out;
   }, [bloqueos, hoy]);
 
-  if (!consultorioId) return <div className="mod"><div className="card"><div className="empty"><div className="ic">🏥</div><div className="t">Sin clínica asociada</div></div></div></div>;
+  if (!consultorioId) return <div className="pgm"><div className="card"><div className="empty"><div className="ic">🏥</div><div className="t">Sin clínica asociada</div></div></div></div>;
 
   const alto = (H1 - H0) * HH;
   return (
-    <div className="mod">
+    <div className="pgm">
       <div className="mh">
         <div><div className="mh-t">🗓️ Agenda por doctor</div><div className="mh-s">Disponibilidad semanal, citas del día a día y bloqueos por vacaciones o permisos</div></div>
       </div>
@@ -210,7 +210,7 @@ export default function Agenda() {
               <div className="card"><div className="card-b">
                 <div className="sec-t">Bloqueos y vacaciones</div>
                 {puedeEditar && (<>
-                  <div className="g2"><div className="fl"><label>Desde</label><input className="fi sm" type="date" value={bk.desde} onChange={(e) => setBk({ ...bk, desde: e.target.value, hasta: bk.hasta < e.target.value ? e.target.value : bk.hasta })} /></div><div className="fl"><label>Hasta</label><input className="fi sm" type="date" min={bk.desde} value={bk.hasta} onChange={(e) => setBk({ ...bk, hasta: e.target.value })} /></div></div>
+                  <div className="cg2"><div className="fl"><label>Desde</label><input className="fi sm" type="date" value={bk.desde} onChange={(e) => setBk({ ...bk, desde: e.target.value, hasta: bk.hasta < e.target.value ? e.target.value : bk.hasta })} /></div><div className="fl"><label>Hasta</label><input className="fi sm" type="date" min={bk.desde} value={bk.hasta} onChange={(e) => setBk({ ...bk, hasta: e.target.value })} /></div></div>
                   <div className="fl" style={{ marginBottom: 10 }}><input className="fi sm" placeholder="Motivo (vacaciones, congreso…)" value={bk.motivo} onChange={(e) => setBk({ ...bk, motivo: e.target.value })} /></div>
                   <button className="btn-sm sec" type="button" style={{ marginBottom: 12 }} onClick={agregarBloqueo} disabled={guardando}>+ Bloquear fechas</button>
                 </>)}

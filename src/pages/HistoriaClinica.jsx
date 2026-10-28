@@ -49,18 +49,18 @@ function NotaModal({ nota, paciente, doctores, citas, consultorioId, userId, can
       <div className="appt-box" style={{ width: 580 }}>
         <div className="appt-box-title">{nota ? "✏️ Editar nota clínica" : "📝 Nueva sesión clínica"}</div>
         <div className="appt-box-sub">{paciente.nombre}</div>
-        <div className="g3">
+        <div className="cg3">
           <div className="fl"><label>Fecha *</label><input className="fi sm" type="date" value={f.fecha} onChange={(e) => set("fecha", e.target.value)} /></div>
           <div className="fl"><label>Doctor</label><select className="fi sm" value={f.doctor_id} onChange={(e) => set("doctor_id", e.target.value)}><option value="">—</option>{doctores.map((d) => <option key={d.id} value={d.id}>{d.nombre}</option>)}</select></div>
           <div className="fl"><label>Estado</label><select className="fi sm" value={f.estado} onChange={(e) => set("estado", e.target.value)}><option value="completada">Completada</option><option value="en_curso">En curso</option><option value="pendiente">Pendiente</option></select></div>
         </div>
         <div className="fl" style={{ marginBottom: 12 }}><label>Cita asociada (opcional)</label><select className="fi sm" value={f.cita_id} onChange={(e) => set("cita_id", e.target.value)}><option value="">Ninguna</option>{citas.map((c) => <option key={c.id} value={c.id}>{fmtFecha(c.fecha, { day: "2-digit", month: "short", year: "numeric" })} · {c.motivo || "Cita"}</option>)}</select></div>
         <div className="fl" style={{ marginBottom: 12 }}><label>Motivo de la sesión *</label><input className="fi sm" value={f.motivo} onChange={(e) => set("motivo", e.target.value)} /></div>
-        <div className="g2">
+        <div className="cg2">
           <div className="fl"><label>Diagnóstico</label><textarea className="fi sm" rows={2} value={f.diagnostico} onChange={(e) => set("diagnostico", e.target.value)} /></div>
           <div className="fl"><label>Tratamiento realizado</label><textarea className="fi sm" rows={2} value={f.tratamiento} onChange={(e) => set("tratamiento", e.target.value)} /></div>
         </div>
-        <div className="g2">
+        <div className="cg2">
           <div className="fl"><label>Piezas</label><input className="fi sm mono" placeholder="36, 37" value={f.piezas} onChange={(e) => set("piezas", e.target.value)} /></div>
           <div className="fl"><label>Indicaciones al paciente</label><input className="fi sm" value={f.indicaciones} onChange={(e) => set("indicaciones", e.target.value)} /></div>
         </div>
@@ -183,11 +183,11 @@ export default function HistoriaClinica({ irA }) {
     cargarPaciente(d.pac.id);
   }
 
-  if (!consultorioId) return <div className="mod"><div className="card"><div className="empty"><div className="ic">🏥</div><div className="t">Sin clínica asociada</div></div></div></div>;
+  if (!consultorioId) return <div className="pgm"><div className="card"><div className="empty"><div className="ic">🏥</div><div className="t">Sin clínica asociada</div></div></div></div>;
   const pac = d?.pac;
 
   return (
-    <div className="mod">
+    <div className="pgm">
       <div className="mh">
         <div><div className="mh-t">🗂️ Historia clínica</div><div className="mh-s">Todo el recorrido del paciente en un solo lugar: sesiones, antecedentes, odontograma y tratamientos</div></div>
       </div>
@@ -245,15 +245,15 @@ export default function HistoriaClinica({ irA }) {
 
           {tab === "resumen" && (
             <div className="card"><div className="card-b">
-              <div className="g2">
+              <div className="cg2">
                 <div className="fl"><label>⚠️ Alergias</label><textarea className="fi sm" rows={2} placeholder="Penicilina, látex, anestésicos…" value={res.alergias} onChange={(e) => setRes({ ...res, alergias: e.target.value })} /></div>
                 <div className="fl"><label>Tipo de sangre</label><select className="fi sm" value={res.tipoSangre} onChange={(e) => setRes({ ...res, tipoSangre: e.target.value })}>{SANGRE.map((s) => <option key={s} value={s}>{s || "—"}</option>)}</select></div>
               </div>
-              <div className="g2">
+              <div className="cg2">
                 <div className="fl"><label>Medicamentos actuales</label><textarea className="fi sm" rows={3} value={res.medicamentos} onChange={(e) => setRes({ ...res, medicamentos: e.target.value })} /></div>
                 <div className="fl"><label>Enfermedades sistémicas</label><textarea className="fi sm" rows={3} placeholder="Diabetes, hipertensión, cardiopatías…" value={res.enfermedades} onChange={(e) => setRes({ ...res, enfermedades: e.target.value })} /></div>
               </div>
-              <div className="g2">
+              <div className="cg2">
                 <div className="fl"><label>Antecedentes odontológicos</label><textarea className="fi sm" rows={3} value={res.antecedentes} onChange={(e) => setRes({ ...res, antecedentes: e.target.value })} /></div>
                 <div className="fl"><label>Observaciones generales</label><textarea className="fi sm" rows={3} value={res.observaciones} onChange={(e) => setRes({ ...res, observaciones: e.target.value })} /></div>
               </div>
@@ -316,7 +316,7 @@ export default function HistoriaClinica({ irA }) {
               {esAdmin ? (
                 <>
                   <div className="sec-t">Reasignar doctor</div>
-                  <div className="g2"><div className="fl"><label>Nuevo doctor</label><select className="fi sm" value={reasig.doctor} onChange={(e) => setReasig({ ...reasig, doctor: e.target.value })}><option value="">Seleccionar…</option>{doctores.map((x) => <option key={x.id} value={x.id}>{x.nombre}</option>)}</select></div><div className="fl"><label>Motivo</label><input className="fi sm" value={reasig.motivo} onChange={(e) => setReasig({ ...reasig, motivo: e.target.value })} /></div></div>
+                  <div className="cg2"><div className="fl"><label>Nuevo doctor</label><select className="fi sm" value={reasig.doctor} onChange={(e) => setReasig({ ...reasig, doctor: e.target.value })}><option value="">Seleccionar…</option>{doctores.map((x) => <option key={x.id} value={x.id}>{x.nombre}</option>)}</select></div><div className="fl"><label>Motivo</label><input className="fi sm" value={reasig.motivo} onChange={(e) => setReasig({ ...reasig, motivo: e.target.value })} /></div></div>
                   <div className="flex gap8" style={{ alignItems: "center", marginBottom: 16 }}><button className="btn-sm" type="button" onClick={reasignar}>Reasignar</button>{msgDoc && <span className="txt-sm fw6" style={{ color: msgDoc.t === "ok" ? "var(--green)" : "var(--rose)" }}>{msgDoc.txt}</span>}</div>
                 </>
               ) : <div className="txt-muted" style={{ marginBottom: 16 }}>Solo administración puede reasignar el doctor.</div>}

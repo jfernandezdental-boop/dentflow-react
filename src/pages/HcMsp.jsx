@@ -137,10 +137,10 @@ export default function HcMsp({ irA }) {
     w.document.write(htmlHc(f, pac, nombreDoc[f.doctor_id])); w.document.close();
   }
 
-  if (!consultorioId) return <div className="mod"><div className="card"><div className="empty"><div className="ic">🏥</div><div className="t">Sin clínica asociada</div></div></div></div>;
+  if (!consultorioId) return <div className="pgm"><div className="card"><div className="empty"><div className="ic">🏥</div><div className="t">Sin clínica asociada</div></div></div></div>;
 
   return (
-    <div className="mod">
+    <div className="pgm">
       <div className="mh">
         <div><div className="mh-t">📋 HC MSP · Formulario 033</div><div className="mh-s">Historia clínica única de odontología, con índices CPO-ceo, higiene oral y diagnósticos CIE-10</div></div>
         {f && <div className="mh-a"><button className="btn-sm sec" onClick={() => { setF(null); setMsg(null); }}>← Volver</button>{puedeEscribir && <button className="btn-sm" onClick={guardar} disabled={saving}>{saving ? "Guardando…" : f.id ? "💾 Actualizar" : "💾 Guardar historia"}</button>}<button className="btn-sm sec" onClick={imprimir}>🖨 Imprimir</button></div>}
@@ -177,12 +177,12 @@ export default function HcMsp({ irA }) {
       ) : (
         <div className="card"><div className="card-b">
           <Sec letra="A" titulo="Establecimiento y paciente">
-            <div className="g3">
+            <div className="cg3">
               <div className="fl"><label>Establecimiento</label><input className="fi sm" value={f.c.establecimiento} onChange={(e) => set("c.establecimiento", e.target.value)} /></div>
               <div className="fl"><label>Código (unicódigo)</label><input className="fi sm mono" value={f.c.unicodigo} onChange={(e) => set("c.unicodigo", e.target.value)} /></div>
               <div className="fl"><label>N.º historia clínica</label><input className="fi sm mono" value={f.c.archivo} onChange={(e) => set("c.archivo", e.target.value)} /></div>
             </div>
-            <div className="g3">
+            <div className="cg3">
               <div className="fl"><label>Paciente</label><input className="fi sm" readOnly value={pac.nombre} /></div>
               <div className="fl"><label>Fecha</label><input className="fi sm" type="date" value={f.fecha} onChange={(e) => set("fecha", e.target.value)} /></div>
               <div className="fl"><label>Profesional</label><select className="fi sm" value={f.doctor_id} onChange={(e) => set("doctor_id", e.target.value)}><option value="">—</option>{doctores.map((d) => <option key={d.id} value={d.id}>{d.nombre}</option>)}</select></div>
@@ -199,7 +199,7 @@ export default function HcMsp({ irA }) {
             {f.af.includes("otro") && <input className="fi sm" style={{ marginTop: 6 }} placeholder="Especifica" value={f.af_otro} onChange={(e) => set("af_otro", e.target.value)} />}
           </Sec>
           <Sec letra="E" titulo="Constantes vitales">
-            <div className="g3">{[["pa", "Presión arterial"], ["fc", "Frec. cardiaca"], ["fr", "Frec. respiratoria"], ["temp", "Temperatura °C"], ["peso", "Peso (kg)"], ["talla", "Talla (cm)"]].map(([k, l]) => <div key={k} className="fl"><label>{l}</label><input className="fi sm mono" value={f.c.constantes[k]} onChange={(e) => set("c.constantes." + k, e.target.value)} /></div>)}</div>
+            <div className="cg3">{[["pa", "Presión arterial"], ["fc", "Frec. cardiaca"], ["fr", "Frec. respiratoria"], ["temp", "Temperatura °C"], ["peso", "Peso (kg)"], ["talla", "Talla (cm)"]].map(([k, l]) => <div key={k} className="fl"><label>{l}</label><input className="fi sm mono" value={f.c.constantes[k]} onChange={(e) => set("c.constantes." + k, e.target.value)} /></div>)}</div>
           </Sec>
           <Sec letra="F" titulo="Examen del sistema estomatognático">
             {EXAMEN.map(([k, l]) => { const e = f.examen[k]; return (
@@ -212,7 +212,7 @@ export default function HcMsp({ irA }) {
             <div className="txt-muted" style={{ marginBottom: 6 }}>Higiene oral simplificada · placa y cálculo (0–3) por pieza índice</div>
             <div className="hig">{PIEZAS_OHI.map((p) => <div key={p}><b>{p}</b><select className="fi sm" title="Placa" value={f.ind.higiene[p]?.placa ?? ""} onChange={(e) => set("ind.higiene." + p, { ...(f.ind.higiene[p] || {}), placa: e.target.value })}><option value="">Placa</option>{[0, 1, 2, 3].map((n) => <option key={n}>{n}</option>)}</select><select className="fi sm" style={{ marginTop: 4 }} title="Cálculo" value={f.ind.higiene[p]?.calculo ?? ""} onChange={(e) => set("ind.higiene." + p, { ...(f.ind.higiene[p] || {}), calculo: e.target.value })}><option value="">Cálculo</option>{[0, 1, 2, 3].map((n) => <option key={n}>{n}</option>)}</select></div>)}</div>
             <div className="txt-sm fw6" style={{ marginBottom: 12 }}>Índice: placa {ohi.placa.toFixed(2)} + cálculo {ohi.calculo.toFixed(2)} = <span style={{ color: ohi.nivel === "malo" ? "var(--rose)" : ohi.nivel === "bueno" ? "var(--green)" : "var(--amber)" }}>{ohi.total.toFixed(2)} ({ohi.nivel})</span></div>
-            <div className="g3">
+            <div className="cg3">
               <div className="fl"><label>Enfermedad periodontal</label><select className="fi sm" value={f.ind.enf_periodontal} onChange={(e) => set("ind.enf_periodontal", e.target.value)}><option value="">—</option><option>Leve</option><option>Moderada</option><option>Severa</option></select></div>
               <div className="fl"><label>Mal oclusión</label><select className="fi sm" value={f.ind.mal_oclusion} onChange={(e) => set("ind.mal_oclusion", e.target.value)}><option value="">—</option><option>Angle I</option><option>Angle II</option><option>Angle III</option></select></div>
               <div className="fl"><label>Fluorosis</label><select className="fi sm" value={f.ind.fluorosis} onChange={(e) => set("ind.fluorosis", e.target.value)}><option value="">—</option><option>Leve</option><option>Moderada</option><option>Severa</option></select></div>
@@ -226,7 +226,7 @@ export default function HcMsp({ irA }) {
           <Sec letra="I" titulo="Diagnósticos (CIE-10)">
             <datalist id="cie10">{CIE10.map((c) => <option key={c.codigo} value={c.codigo}>{c.descripcion}</option>)}</datalist>
             {f.dx.map((x, i) => (
-              <div key={i} className="g3" style={{ gridTemplateColumns: "110px 1fr 70px 120px 30px", alignItems: "end" }}>
+              <div key={i} className="cg3 dx-row">
                 <div className="fl"><label>CIE-10</label><input className="fi sm mono" list="cie10" value={x.codigo_cie10} onChange={(e) => { const c = CIE10.find((y) => y.codigo === e.target.value.toUpperCase()); setF((s) => ({ ...s, dx: s.dx.map((d, j) => (j === i ? { ...d, codigo_cie10: e.target.value.toUpperCase(), descripcion: c ? c.descripcion : d.descripcion } : d)) })); }} /></div>
                 <div className="fl"><label>Descripción</label><input className="fi sm" value={x.descripcion} onChange={(e) => setF((s) => ({ ...s, dx: s.dx.map((d, j) => (j === i ? { ...d, descripcion: e.target.value } : d)) }))} /></div>
                 <div className="fl"><label>Pieza</label><input className="fi sm mono" value={x.pieza} onChange={(e) => setF((s) => ({ ...s, dx: s.dx.map((d, j) => (j === i ? { ...d, pieza: e.target.value } : d)) }))} /></div>
@@ -239,19 +239,19 @@ export default function HcMsp({ irA }) {
           <Sec letra="K" titulo="Evolución y prescripciones">
             {f.evo.map((x, i) => (
               <div key={i} className="card" style={{ marginBottom: 8, background: "var(--bg2)" }}><div className="card-b">
-                <div className="g3" style={{ gridTemplateColumns: "90px 150px 1fr 30px", alignItems: "end" }}>
+                <div className="cg3 evo-row">
                   <div className="fl"><label>Sesión</label><input className="fi sm mono" value={x.numero_sesion} onChange={(e) => setF((s) => ({ ...s, evo: s.evo.map((d, j) => (j === i ? { ...d, numero_sesion: e.target.value } : d)) }))} /></div>
                   <div className="fl"><label>Fecha</label><input className="fi sm" type="date" value={x.fecha} onChange={(e) => setF((s) => ({ ...s, evo: s.evo.map((d, j) => (j === i ? { ...d, fecha: e.target.value } : d)) }))} /></div>
                   <div className="fl"><label>Firma / responsable</label><input className="fi sm" value={x.firma} onChange={(e) => setF((s) => ({ ...s, evo: s.evo.map((d, j) => (j === i ? { ...d, firma: e.target.value } : d)) }))} /></div>
                   <button type="button" className="rx-x" onClick={() => setF((s) => ({ ...s, evo: s.evo.filter((_, j) => j !== i) }))}>✕</button>
                 </div>
-                <div className="g3">{[["diagnosticos_complicaciones", "Diagnósticos y complicaciones"], ["procedimientos", "Procedimientos"], ["prescripciones", "Prescripciones"]].map(([k, l]) => <div key={k} className="fl"><label>{l}</label><textarea className="fi sm" rows={2} value={x[k]} onChange={(e) => setF((s) => ({ ...s, evo: s.evo.map((d, j) => (j === i ? { ...d, [k]: e.target.value } : d)) }))} /></div>)}</div>
+                <div className="cg3">{[["diagnosticos_complicaciones", "Diagnósticos y complicaciones"], ["procedimientos", "Procedimientos"], ["prescripciones", "Prescripciones"]].map(([k, l]) => <div key={k} className="fl"><label>{l}</label><textarea className="fi sm" rows={2} value={x[k]} onChange={(e) => setF((s) => ({ ...s, evo: s.evo.map((d, j) => (j === i ? { ...d, [k]: e.target.value } : d)) }))} /></div>)}</div>
               </div></div>))}
             <button className="btn-sm sec" type="button" onClick={() => setF((s) => ({ ...s, evo: [...s.evo, { numero_sesion: String(s.evo.length + 1), fecha: hoyISO(), diagnosticos_complicaciones: "", procedimientos: "", prescripciones: "", firma: "" }] }))}>+ Sesión</button>
           </Sec>
           <Sec letra="L" titulo="Consentimiento informado">
             <label className="ck" style={{ marginBottom: 8 }}><input type="checkbox" checked={f.c.consentimiento.aceptado} onChange={(e) => set("c.consentimiento.aceptado", e.target.checked)} />El paciente (o su representante) fue informado y acepta el tratamiento propuesto</label>
-            <div className="g2"><div className="fl"><label>Nombre de quien firma</label><input className="fi sm" value={f.c.consentimiento.firmante} onChange={(e) => set("c.consentimiento.firmante", e.target.value)} /></div><div className="fl"><label>Fecha</label><input className="fi sm" type="date" value={f.c.consentimiento.fecha} onChange={(e) => set("c.consentimiento.fecha", e.target.value)} /></div></div>
+            <div className="cg2"><div className="fl"><label>Nombre de quien firma</label><input className="fi sm" value={f.c.consentimiento.firmante} onChange={(e) => set("c.consentimiento.firmante", e.target.value)} /></div><div className="fl"><label>Fecha</label><input className="fi sm" type="date" value={f.c.consentimiento.fecha} onChange={(e) => set("c.consentimiento.fecha", e.target.value)} /></div></div>
           </Sec>
         </div></div>
       )}

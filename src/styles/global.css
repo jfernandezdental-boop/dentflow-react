@@ -1078,8 +1078,8 @@ tr:hover td{background:var(--bg)}
 
 @media(max-width:860px){
   .mobile-menu-btn{display:inline-flex !important;margin-right:6px}
-  .sidebar{position:fixed;left:0;top:0;z-index:200;transform:translateX(-100%);transition:transform .25s ease;box-shadow:0 0 40px rgba(0,0,0,.3)}
-  .sidebar.mobile-on{transform:translateX(0)}
+  .sidebar{position:fixed;left:0;top:0;z-index:200;transform:translateX(-100%);transition:transform .25s ease,box-shadow .25s ease;box-shadow:none}
+  .sidebar.mobile-on{transform:translateX(0);box-shadow:0 0 40px rgba(0,0,0,.3)}
   .main{width:100%}
   .topbar{padding:12px 14px}
   .topbar .pg-title{font-size:15px}

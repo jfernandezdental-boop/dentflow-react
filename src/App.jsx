@@ -109,7 +109,7 @@ function Shell() {
           <button className="icon-btn mobile-menu-btn" style={{ display: "none" }} onClick={() => setMobileOpen(true)} aria-label="Menú">
             ☰
           </button>
-          <div className="pg-title" style={{ flex: 1 }} />
+          <div className="pg-title" style={{ flex: 1 }}>{(() => { const it = sections.flatMap((s) => s.items).find((x) => x.mod === mod); return it ? `${it.icon} ${it.label}` : ""; })()}</div>
         </div>
         <Suspense
           fallback={

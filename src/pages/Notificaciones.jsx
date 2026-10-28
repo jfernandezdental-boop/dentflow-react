@@ -176,10 +176,10 @@ export default function Notificaciones() {
     setItems((arr) => arr.filter((i) => i.id !== n.id));
   }
 
-  if (!consultorioId) return <div className="mod"><div className="card"><div className="empty"><div className="ic">🏥</div><div className="t">Sin clínica asociada</div></div></div></div>;
+  if (!consultorioId) return <div className="pgm"><div className="card"><div className="empty"><div className="ic">🏥</div><div className="t">Sin clínica asociada</div></div></div></div>;
 
   return (
-    <div className="mod">
+    <div className="pgm">
       <div className="mh">
         <div>
           <div className="mh-t">🔔 Centro de notificaciones</div>
