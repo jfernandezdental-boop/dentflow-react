@@ -8,15 +8,15 @@ export const NAV_SECTIONS = [
       { mod: "dashboard", icon: "📊", label: "Dashboard", ready: true },
       { mod: "pacientes", icon: "👥", label: "Pacientes", ready: true },
       { mod: "calendario", icon: "📅", label: "Calendario", ready: true },
-      { mod: "agenda", icon: "🗓️", label: "Agenda Doctor", ready: false },
+      { mod: "agenda", icon: "🗓️", label: "Agenda Doctor", ready: true },
     ],
   },
   {
     title: "Clínico",
     items: [
-      { mod: "historia", icon: "🗂️", label: "Historia Clínica", ready: false },
+      { mod: "historia", icon: "🗂️", label: "Historia Clínica", ready: true },
       { mod: "odontograma", icon: "🦷", label: "Odontograma", ready: true },
-      { mod: "hcmsp", icon: "📋", label: "HC MSP · form.033", ready: false },
+      { mod: "hcmsp", icon: "📋", label: "HC MSP · form.033", ready: true },
       { mod: "recetario", icon: "💊", label: "Recetario", ready: true },
       { mod: "presupuesto", icon: "💰", label: "Presupuesto", ready: true },
       { mod: "laboratorio", icon: "🔬", label: "Laboratorio", ready: true },
