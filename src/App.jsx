@@ -43,7 +43,7 @@ function Shell() {
   const displayName = profile?.nombre || "Usuario";
 
   function renderMod() {
-    if (mod === "dashboard") return <Dashboard />;
+    if (mod === "dashboard") return <Dashboard irA={irA} />;
     if (mod === "configuracion") return <Configuracion />;
     if (mod === "pacientes") return <Pacientes />;
     if (mod === "calendario") return <Citas />;
@@ -84,7 +84,7 @@ function Shell() {
                 key={it.mod}
                 className={"ni" + (mod === it.mod ? " on" : "")}
                 onClick={() => irA(it.mod)}
-                title={it.ready ? "" : "Aún en el index.html original — pendiente de migrar"}
+                title={it.ready ? "" : "Módulo en preparación"}
               >
                 <span className="icon">{it.icon}</span>
                 {it.label}

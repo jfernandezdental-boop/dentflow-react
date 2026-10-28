@@ -1,6 +1,5 @@
-// Estado real de la migración a Vite+React. "ready" son los módulos ya
-// portados a componentes React funcionales; el resto sigue viviendo en el
-// index.html original hasta que se migren en las siguientes fases.
+// Registro de módulos del sistema. "ready" = módulo funcional en React;
+// los que no lo están se muestran como "en preparación" en el menú.
 export const NAV_SECTIONS = [
   {
     title: "Principal",

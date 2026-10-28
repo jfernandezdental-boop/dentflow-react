@@ -238,7 +238,7 @@ export default function Inventario() {
 
       <div className="card mt14">
         <div className="card-b txt-sm txt-muted">
-          🚧 Pendiente en esta versión: generar orden de compra automática (crea un gasto vinculado) y el sistema de lotes/vencimiento con Kardex — el archivo actual del sistema original tampoco los tiene conectados en esta rama.
+          🚧 Próximamente: orden de compra automática (crea un gasto vinculado) y lotes/vencimiento con Kardex. Tampoco estaban conectados en el sistema original.
         </div>
       </div>
 

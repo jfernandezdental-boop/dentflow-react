@@ -225,3 +225,30 @@
 .cpo{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .cpo .tot{background:var(--teal-pale);color:var(--teal2);font-weight:700;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace}
 @media(max-width:700px){.hig{grid-template-columns:repeat(3,1fr)}.ex-row{grid-template-columns:1fr}}
+
+/* ── Dashboard ── */
+.dash-hi{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.dash-hi .hi{font-size:12.5px;color:var(--muted);font-weight:600;text-transform:capitalize}
+.qa{display:flex;gap:8px;flex-wrap:wrap}
+.kpi-s{font-size:11px;color:var(--muted);margin-top:3px}
+.dash-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;margin-bottom:16px;align-items:start}
+@media(max-width:1050px){.dash-grid{grid-template-columns:1fr}}
+.dpanel-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px;border-bottom:1px solid var(--border)}
+.dpanel-h b{font-size:14px}
+.dpanel-h button{border:none;background:none;color:var(--teal);font-weight:700;font-size:12px;cursor:pointer}
+.chart-box{padding:14px 16px 10px}
+.chart-box svg{width:100%;height:auto;display:block}
+.lg{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-soft);padding:0 18px 14px}
+.lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.up-i{display:flex;gap:12px;align-items:center;padding:11px 18px;border-top:1px solid var(--border)}
+.up-i:first-child{border-top:none}
+.up-t{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12.5px;color:var(--teal2);min-width:62px;line-height:1.25}
+.up-t small{display:block;font-weight:500;color:var(--muted);font-size:10.5px}
+.up-w{flex:1;min-width:0}
+.up-w b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.up-w span{font-size:11.5px;color:var(--muted)}
+.al{display:flex;gap:10px;align-items:center;padding:11px 18px;border-top:1px solid var(--border);cursor:pointer;font-size:13px}
+.al:first-child{border-top:none}.al:hover{background:var(--bg2)}
+.al .n{font-family:'JetBrains Mono',monospace;font-weight:700;min-width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12.5px}
+.al .n.r{background:var(--rose-pale);color:var(--rose)}.al .n.a{background:var(--amber-pale);color:var(--amber)}.al .n.g{background:var(--green-pale);color:var(--green)}.al .n.t{background:var(--teal-pale);color:var(--teal2)}
+.al small{display:block;color:var(--muted);font-size:11px}

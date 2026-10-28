@@ -290,7 +290,7 @@ export default function Contabilidad() {
               <button className="btn-sm" onClick={guardarAnticipo}>+ Agregar</button>
             </div>
             {empleados.length === 0 && !loading && (
-              <div className="card-b txt-sm txt-muted" style={{ paddingTop: 0 }}>No hay empleados activos registrados todavía — el módulo de RRHH aún no está migrado, así que primero necesitas cargar empleados directo en Supabase o esperar a esa migración.</div>
+              <div className="card-b txt-sm txt-muted" style={{ paddingTop: 0 }}>No hay empleados activos registrados todavía — agrégalos en RRHH · Nómina para poder registrar anticipos.</div>
             )}
           </div>
           <div className="tw">

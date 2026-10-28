@@ -371,7 +371,7 @@ export default function Presupuesto() {
 
       <div className="card mt14">
         <div className="card-b txt-sm txt-muted">
-          🚧 Todavía pendiente en esta versión: exportar a PDF y el flujo "Facturar y cobrar" (que convierte la proforma en un cobro real) — sigue disponible en el sistema original mientras se migra.
+          🚧 Próximamente: exportar a PDF y el flujo "Facturar y cobrar" (convertir la proforma en un cobro). Tampoco estaban conectados en el sistema original.
         </div>
       </div>
     </div>
