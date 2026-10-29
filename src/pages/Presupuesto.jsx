@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { useAuth } from "../lib/AuthContext";
+import { FacturarModal, AbonoModal } from "../components/CobroModales";
+import "../styles/clinico.css";
 
 const ESTADOS = [
   { v: "pendiente", label: "Pendiente", tag: "ta" },
@@ -261,7 +263,8 @@ function PresupuestoForm({ presupuestoId, consultorioId, pacientes, doctores, ca
 }
 
 export default function Presupuesto() {
-  const { profile } = useAuth();
+  const { profile, rolUi } = useAuth();
+  const puedeCobrar = rolUi === "admin" || rolUi === "recepcionista";
   const consultorioId = profile?.consultorio_id || null;
   const [vista, setVista] = useState("lista"); // 'lista' | 'form'
   const [editandoId, setEditandoId] = useState(null);
@@ -271,17 +274,23 @@ export default function Presupuesto() {
   const [catalogo, setCatalogo] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filtroEstado, setFiltroEstado] = useState("");
+  const [cargosPres, setCargosPres] = useState({});
+  const [facturar, setFacturar] = useState(null);
+  const [abonar, setAbonar] = useState(null);
+  const [aviso, setAviso] = useState("");
 
   async function cargar() {
     if (!consultorioId) { setLoading(false); return; }
     setLoading(true);
-    const [{ data: ps }, { data: its }, { data: pac }, { data: doc }, { data: cat }] = await Promise.all([
+    const [{ data: ps }, { data: its }, { data: pac }, { data: doc }, { data: cat }, { data: cgs }] = await Promise.all([
       supabase.from("presupuestos").select("*, pacientes(nombre), doctores(nombre)").eq("consultorio_id", consultorioId).order("created_at", { ascending: false }),
       supabase.from("presupuesto_items").select("presupuesto_id,precio,descuento"),
       supabase.from("pacientes").select("id,nombre").eq("consultorio_id", consultorioId).eq("activo", true).order("nombre"),
       supabase.from("doctores").select("id,nombre").eq("consultorio_id", consultorioId).eq("activo", true).order("nombre"),
       supabase.from("procedimientos").select("id,nombre,precio_base,categoria").eq("consultorio_id", consultorioId).eq("activo", true).order("nombre"),
+      supabase.from("cargos").select("id,total,presupuesto_id,procedimiento,pacientes(nombre),abonos(monto)").eq("consultorio_id", consultorioId).not("presupuesto_id", "is", null),
     ]);
+    setCargosPres(Object.fromEntries((cgs || []).map((c) => [c.presupuesto_id, { ...c, pagado: (c.abonos || []).reduce((s, a) => s + Number(a.monto || 0), 0) }])));
     const totalesPorPresupuesto = {};
     (its || []).forEach((it) => {
       const neto = (it.precio || 0) * (1 - (it.descuento || 0) / 100);
@@ -351,11 +360,11 @@ export default function Presupuesto() {
       <div className="tw">
         <table>
           <thead>
-            <tr><th>Paciente</th><th>Doctor</th><th>Fecha</th><th>Total</th><th>Estado</th></tr>
+            <tr><th>Paciente</th><th>Doctor</th><th>Fecha</th><th>Total</th><th>Estado</th><th>Cobro</th></tr>
           </thead>
           <tbody>
-            {loading && <tr><td colSpan={5} className="txt-muted" style={{ padding: 20 }}>Cargando…</td></tr>}
-            {!loading && filtrados.length === 0 && <tr><td colSpan={5} className="txt-muted" style={{ padding: 20 }}>Sin presupuestos para este filtro.</td></tr>}
+            {loading && <tr><td colSpan={6} className="txt-muted" style={{ padding: 20 }}>Cargando…</td></tr>}
+            {!loading && filtrados.length === 0 && <tr><td colSpan={6} className="txt-muted" style={{ padding: 20 }}>Sin presupuestos para este filtro.</td></tr>}
             {!loading && filtrados.map((p) => (
               <tr key={p.id} onClick={() => abrirEditar(p)} style={{ cursor: "pointer" }}>
                 <td className="fw6">{p.pacientes?.nombre || "?"}</td>
@@ -363,15 +372,31 @@ export default function Presupuesto() {
                 <td>{p.fecha}</td>
                 <td className="mono">{fmt(p._total)}</td>
                 <td><span className={"tag " + estadoInfo(p.estado).tag}>{estadoInfo(p.estado).label}</span></td>
+                <td onClick={(e) => e.stopPropagation()} style={{ whiteSpace: "nowrap" }}>
+                  {cargosPres[p.id] ? (
+                    <span className="txt-sm">
+                      <span className="mono fw6" style={{ color: cargosPres[p.id].total - cargosPres[p.id].pagado > 0.01 ? "var(--rose)" : "var(--green)" }}>
+                        {cargosPres[p.id].total - cargosPres[p.id].pagado > 0.01 ? "Saldo " + fmt(cargosPres[p.id].total - cargosPres[p.id].pagado) : "Pagado ✓"}
+                      </span>{" "}
+                      {puedeCobrar && cargosPres[p.id].total - cargosPres[p.id].pagado > 0.01 && <button className="btn-sm" type="button" onClick={() => setAbonar(cargosPres[p.id])}>💵 Abonar</button>}
+                    </span>
+                  ) : puedeCobrar && p._total > 0 ? (
+                    <button className="btn-sm" type="button" onClick={() => setFacturar(p)}>💳 Facturar y cobrar</button>
+                  ) : <span className="txt-muted">—</span>}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
+      {aviso && <div className="txt-sm fw6 mt14" style={{ color: "var(--teal)" }}>{aviso}</div>}
+      {facturar && <FacturarModal presupuesto={facturar} consultorioId={consultorioId} userId={profile?.id} onClose={() => setFacturar(null)} onSaved={() => { setFacturar(null); setAviso("✓ Presupuesto facturado. Puedes ver el cargo en Contabilidad → Pagos."); cargar(); }} />}
+      {abonar && <AbonoModal cargo={abonar} pagado={abonar.pagado} userId={profile?.id} onClose={() => setAbonar(null)} onSaved={() => { setAbonar(null); setAviso("✓ Abono registrado."); cargar(); }} />}
+
       <div className="card mt14">
         <div className="card-b txt-sm txt-muted">
-          🚧 Próximamente: exportar a PDF y el flujo "Facturar y cobrar" (convertir la proforma en un cobro). Tampoco estaban conectados en el sistema original.
+          🚧 Próximamente: exportar la proforma a PDF.
         </div>
       </div>
     </div>

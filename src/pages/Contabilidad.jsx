@@ -1,4 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
+import { AbonoModal, CargoManualModal } from "../components/CobroModales";
+import { METODO_LABEL, sincronizarPresupuesto } from "../lib/cobros";
+import "../styles/clinico.css";
 import { supabase } from "../lib/supabaseClient";
 import { useAuth } from "../lib/AuthContext";
 
@@ -42,6 +45,9 @@ export default function Contabilidad() {
   const [gastoForm, setGastoForm] = useState({ concepto: "", categoria: CATEGORIAS_GASTO[0], proveedor: "", monto: "", metodo: METODOS_PAGO[0] });
   const [anticipoForm, setAnticipoForm] = useState({ empleado_id: "", tipo: TIPOS_ANTICIPO[0], monto: "", observaciones: "" });
   const [msg, setMsg] = useState("");
+  const [abonoCargo, setAbonoCargo] = useState(null);
+  const [cargoNuevo, setCargoNuevo] = useState(false);
+  const [abiertos, setAbiertos] = useState({});
 
   const { desde, hasta } = rangoDeFechas(periodo);
 
@@ -49,7 +55,7 @@ export default function Contabilidad() {
     if (!consultorioId) { setLoading(false); return; }
     setLoading(true);
     const [{ data: c }, { data: g }, { data: a }, { data: emp }] = await Promise.all([
-      supabase.from("cargos").select("id,total,fecha,procedimiento,paciente_id,doctor_id,pacientes(nombre),doctores(nombre)").eq("consultorio_id", consultorioId).gte("fecha", desde).lte("fecha", hasta).order("fecha", { ascending: false }),
+      supabase.from("cargos").select("id,total,fecha,procedimiento,paciente_id,doctor_id,presupuesto_id,pacientes(nombre),doctores(nombre)").eq("consultorio_id", consultorioId).gte("fecha", desde).lte("fecha", hasta).order("fecha", { ascending: false }),
       supabase.from("gastos").select("*").eq("consultorio_id", consultorioId).gte("fecha", desde).lte("fecha", hasta).order("fecha", { ascending: false }),
       supabase.from("anticipos").select("*, empleados(nombre)").gte("fecha", desde).lte("fecha", hasta).order("fecha", { ascending: false }),
       supabase.from("empleados").select("id,nombre").eq("consultorio_id", consultorioId).eq("activo", true).order("nombre"),
@@ -134,6 +140,7 @@ export default function Contabilidad() {
   async function guardarAnticipo() {
     if (!anticipoForm.empleado_id || !anticipoForm.monto) { setMsg("Selecciona empleado y monto."); return; }
     const { error } = await supabase.from("anticipos").insert({
+      consultorio_id: consultorioId,
       empleado_id: anticipoForm.empleado_id,
       tipo: anticipoForm.tipo,
       monto: parseFloat(anticipoForm.monto) || 0,
@@ -144,6 +151,15 @@ export default function Contabilidad() {
     if (error) { setMsg("No se pudo guardar el anticipo: " + error.message); return; }
     setAnticipoForm({ empleado_id: "", tipo: TIPOS_ANTICIPO[0], monto: "", observaciones: "" });
     setMsg("✓ Anticipo registrado.");
+    await cargar();
+  }
+
+  async function borrarAbono(a) {
+    if (!window.confirm(`¿Eliminar el abono de ${fmt(a.monto)}? Esta acción no se puede deshacer.`)) return;
+    const { error } = await supabase.from("abonos").delete().eq("id", a.id);
+    if (error) { setMsg("No se pudo eliminar el abono: " + error.message); return; }
+    await sincronizarPresupuesto(a.cargo_id);
+    setMsg("✓ Abono eliminado.");
     await cargar();
   }
 
@@ -211,28 +227,50 @@ export default function Contabilidad() {
       {msg && <div className="txt-sm" style={{ color: msg.startsWith("✓") ? "var(--teal)" : "var(--rose)", marginBottom: 10 }}>{msg}</div>}
 
       {tab === "pagos" && (
-        <div className="tw">
-          <table>
-            <thead><tr><th>Paciente</th><th>Procedimiento</th><th>Fecha</th><th>Total</th><th>Pagado</th><th>Saldo</th></tr></thead>
-            <tbody>
-              {loading && <tr><td colSpan={6} className="txt-muted" style={{ padding: 20 }}>Cargando…</td></tr>}
-              {!loading && cargos.length === 0 && <tr><td colSpan={6} className="txt-muted" style={{ padding: 20 }}>Sin cargos en este período.</td></tr>}
-              {!loading && cargos.map((c) => {
-                const pagado = abonosPorCargo[c.id] || 0;
-                const saldo = Number(c.total) - pagado;
-                return (
-                  <tr key={c.id}>
-                    <td className="fw6">{c.pacientes?.nombre || "?"}</td>
-                    <td>{c.procedimiento || "—"}</td>
-                    <td>{c.fecha}</td>
-                    <td className="mono">{fmt(c.total)}</td>
-                    <td className="mono" style={{ color: "var(--teal)" }}>{fmt(pagado)}</td>
-                    <td className="mono" style={{ color: saldo > 0.01 ? "var(--rose)" : "var(--muted)" }}>{fmt(saldo)}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <div>
+          <div className="flex gap8 mb14" style={{ justifyContent: "flex-end" }}>
+            <button className="btn-sm" type="button" onClick={() => setCargoNuevo(true)}>+ Nuevo cargo</button>
+          </div>
+          <div className="tw">
+            <table>
+              <thead><tr><th>Paciente</th><th>Procedimiento</th><th>Fecha</th><th>Total</th><th>Pagado</th><th>Saldo</th><th /></tr></thead>
+              <tbody>
+                {loading && <tr><td colSpan={7} className="txt-muted" style={{ padding: 20 }}>Cargando…</td></tr>}
+                {!loading && cargos.length === 0 && <tr><td colSpan={7} className="txt-muted" style={{ padding: 20 }}>Sin cargos en este período. Crea uno con «+ Nuevo cargo» o factura un presupuesto desde el módulo Presupuesto.</td></tr>}
+                {!loading && cargos.map((c) => {
+                  const pagado = abonosPorCargo[c.id] || 0;
+                  const saldo = Number(c.total) - pagado;
+                  const susAbonos = abonos.filter((a) => a.cargo_id === c.id);
+                  return (
+                    <>
+                      <tr key={c.id}>
+                        <td className="fw6">{c.pacientes?.nombre || "?"}</td>
+                        <td>{c.procedimiento || "—"}</td>
+                        <td>{c.fecha}</td>
+                        <td className="mono">{fmt(c.total)}</td>
+                        <td className="mono" style={{ color: "var(--teal)" }}>{fmt(pagado)}</td>
+                        <td className="mono" style={{ color: saldo > 0.01 ? "var(--rose)" : "var(--green)" }}>{saldo > 0.01 ? fmt(saldo) : "Pagado ✓"}</td>
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          {saldo > 0.01 && <button className="btn-sm" type="button" onClick={() => setAbonoCargo(c)}>💵 Abonar</button>}{" "}
+                          {susAbonos.length > 0 && <button className="btn-sm sec" type="button" onClick={() => setAbiertos((o) => ({ ...o, [c.id]: !o[c.id] }))}>{abiertos[c.id] ? "▴" : "▾"} {susAbonos.length} pago{susAbonos.length === 1 ? "" : "s"}</button>}
+                        </td>
+                      </tr>
+                      {abiertos[c.id] && susAbonos.map((a) => (
+                        <tr key={a.id} style={{ background: "var(--bg2)" }}>
+                          <td colSpan={2} style={{ paddingLeft: 28 }} className="txt-muted">↳ {METODO_LABEL[a.metodo] || a.metodo}{a.observaciones ? ` · ${a.observaciones}` : ""}</td>
+                          <td>{a.fecha}</td>
+                          <td />
+                          <td className="mono" style={{ color: "var(--teal)" }}>{fmt(a.monto)}</td>
+                          <td />
+                          <td><button className="btn-sm sec" type="button" title="Eliminar abono" onClick={() => borrarAbono(a)}>🗑</button></td>
+                        </tr>
+                      ))}
+                    </>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
@@ -368,6 +406,8 @@ export default function Contabilidad() {
           🚧 Pendiente: cuando el backend de Railway ("dentflow-brain") esté desplegado, este módulo pasará a consultar <code>/api/contabilidad/resumen</code> en vez de calcular todo aquí — mismo resultado, pero validado también del lado del servidor. También falta "Estado de resultados" formal (P&amp;L) — depende de tener categorizados todos los gastos fijos vs variables.
         </div>
       </div>
+      {abonoCargo && <AbonoModal cargo={abonoCargo} pagado={abonosPorCargo[abonoCargo.id] || 0} userId={profile?.id} onClose={() => setAbonoCargo(null)} onSaved={() => { setAbonoCargo(null); setMsg("✓ Abono registrado."); cargar(); }} />}
+      {cargoNuevo && <CargoManualModal consultorioId={consultorioId} userId={profile?.id} onClose={() => setCargoNuevo(false)} onSaved={() => { setCargoNuevo(false); setMsg("✓ Cargo creado."); cargar(); }} />}
     </div>
   );
 }
