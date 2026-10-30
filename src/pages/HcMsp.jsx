@@ -61,7 +61,7 @@ table{width:100%;border-collapse:collapse;margin-bottom:4px}th,td{border:1px sol
 <h2>J. Plan de tratamiento</h2><p>${escHtml(f.c.plan_tratamiento).replace(/\n/g, "<br>") || "—"}</p>
 <h2>K. Evolución y prescripciones</h2><table><tr><th>Sesión / fecha</th><th>Diagnósticos y complicaciones</th><th>Procedimientos</th><th>Prescripciones</th><th>Firma</th></tr>${filasEv || "<tr><td colspan=5>Sin sesiones</td></tr>"}</table>
 <h2>L. Consentimiento informado</h2><p>${f.c.consentimiento.aceptado ? `El paciente / representante ${escHtml(f.c.consentimiento.firmante || "")} aceptó el tratamiento propuesto${f.c.consentimiento.fecha ? " el " + escHtml(fmtFecha(f.c.consentimiento.fecha)) : ""}.` : "Pendiente de firma."}</p>
-<script>window.onload=function(){setTimeout(function(){window.print()},250)}<\/script></body></html>`;
+<script>window.onload=function(){setTimeout(function(){window.print()},250)}</script></body></html>`;
 }
 function ohiCalc(h) {
   const v = PIEZAS_OHI.map((p) => h[p]).filter(Boolean);

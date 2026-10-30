@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { useAuth } from "../lib/AuthContext";
 
+const MODELO_XAI_DEF = "grok-4-1-fast-non-reasoning";
 const BOT_IA_PROMPT_DEF =
   "Eres el asistente de citas de {consultorio}. Ayudas a pacientes a confirmar, reagendar o cancelar su cita por WhatsApp de forma breve, clara y cordial, en español. Solo puedes actuar sobre citas reales usando las herramientas disponibles: nunca inventes horarios ni confirmes nada sin llamar a la función correspondiente. Si el paciente pide algo fuera de tu alcance (una urgencia médica, una queja, algo que no puedas resolver), indícale que el consultorio lo contactará directamente.";
 
@@ -155,8 +156,13 @@ function BotIaPanel({ consultorioId }) {
   const [twilioSid, setTwilioSid] = useState("");
   const [twilioToken, setTwilioToken] = useState("");
   const [twilioFrom, setTwilioFrom] = useState("");
+  const [proveedor, setProveedor] = useState("anthropic");
   const [anthropicKey, setAnthropicKey] = useState("");
+  const [xaiKey, setXaiKey] = useState("");
   const [modelo, setModelo] = useState("claude-haiku-4-5-20251001");
+  const [modelosXai, setModelosXai] = useState([]);
+  const [probando, setProbando] = useState(false);
+  const [prueba, setPrueba] = useState(null);
   const [prompt, setPrompt] = useState(BOT_IA_PROMPT_DEF);
   const [horas, setHoras] = useState("4");
   const [maxSeg, setMaxSeg] = useState("1");
@@ -176,14 +182,45 @@ function BotIaPanel({ consultorioId }) {
         setTwilioSid(bot.twilio_account_sid || "");
         setTwilioToken(bot.twilio_auth_token || "");
         setTwilioFrom(bot.twilio_whatsapp_from || "");
+        setProveedor(bot.proveedor_ia === "xai" ? "xai" : "anthropic");
         setAnthropicKey(bot.anthropic_api_key || "");
-        setModelo(bot.modelo || "claude-haiku-4-5-20251001");
+        setXaiKey(bot.xai_api_key || "");
+        setModelo(bot.modelo || (bot.proveedor_ia === "xai" ? MODELO_XAI_DEF : "claude-haiku-4-5-20251001"));
         setPrompt(bot.prompt_sistema || BOT_IA_PROMPT_DEF);
         setHoras(String(bot.horas_espera_seguimiento ?? "4"));
         setMaxSeg(String(bot.max_seguimientos ?? "1"));
       }
     })();
   }, [consultorioId]);
+
+  function cambiarProveedor(p) {
+    setProveedor(p);
+    setPrueba(null);
+    // El modelo de un proveedor no sirve en el otro: se pasa al recomendado.
+    if (p === "xai" && !/^grok/i.test(modelo)) setModelo(MODELO_XAI_DEF);
+    if (p === "anthropic" && !/^claude/i.test(modelo)) setModelo("claude-haiku-4-5-20251001");
+  }
+
+  async function probarConexion() {
+    const key = proveedor === "xai" ? xaiKey : anthropicKey;
+    if (!key.trim()) { setPrueba({ ok: false, texto: "Escribe la API key antes de probar." }); return; }
+    setProbando(true);
+    setPrueba(null);
+    const { data, error } = await supabase.functions.invoke("bot-ia-probar", { body: { proveedor, api_key: key, modelo } });
+    setProbando(false);
+    if (error || !data) { setPrueba({ ok: false, texto: "No se pudo probar: " + (error?.message || "sin respuesta") }); return; }
+    if (!data.ok) { setPrueba({ ok: false, texto: data.error || "La clave no fue aceptada." }); return; }
+    if (proveedor === "xai") setModelosXai(data.modelos || []);
+    const modeloOk = data.prueba === "ok";
+    setPrueba({
+      ok: proveedor === "anthropic" ? true : modeloOk,
+      texto: proveedor === "anthropic"
+        ? `✓ Clave válida. ${data.modelos?.length || 0} modelos disponibles.`
+        : modeloOk
+          ? `✓ Clave válida y el modelo «${modelo}» responde. ${data.modelos?.length || 0} modelos Grok disponibles.`
+          : `La clave es válida, pero el modelo «${modelo}» falló (${data.prueba || "sin prueba"}). Elige uno de la lista.`,
+    });
+  }
 
   function copiarDeRecordatorios() {
     const rec = recCache.current;
@@ -208,8 +245,10 @@ function BotIaPanel({ consultorioId }) {
       twilio_account_sid: twilioSid || null,
       twilio_auth_token: twilioToken || null,
       twilio_whatsapp_from: twilioFrom || null,
+      proveedor_ia: proveedor,
       anthropic_api_key: anthropicKey || null,
-      modelo: modelo || "claude-haiku-4-5-20251001",
+      xai_api_key: xaiKey || null,
+      modelo: modelo || (proveedor === "xai" ? MODELO_XAI_DEF : "claude-haiku-4-5-20251001"),
       prompt_sistema: prompt || BOT_IA_PROMPT_DEF,
       horas_espera_seguimiento: parseInt(horas, 10),
       max_seguimientos: parseInt(maxSeg, 10),
@@ -243,12 +282,33 @@ function BotIaPanel({ consultorioId }) {
       </div>
 
       <div style={{ background: "var(--bg)", borderRadius: 9, padding: 13, border: "1px solid var(--border)" }}>
-        <div className="fw7 txt-sm mb8">🧠 Anthropic (Claude)</div>
-        <input className="fi sm" type="password" placeholder="API key de console.anthropic.com" style={{ marginBottom: 7 }} value={anthropicKey} onChange={(e) => setAnthropicKey(e.target.value)} />
-        <select className="fi sm" value={modelo} onChange={(e) => setModelo(e.target.value)}>
-          <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 (recomendado, más económico)</option>
-          <option value="claude-sonnet-5">Claude Sonnet 5 (más capaz, mayor costo)</option>
+        <div className="fw7 txt-sm mb8">🧠 Inteligencia artificial</div>
+        <select className="fi sm" style={{ marginBottom: 7 }} value={proveedor} onChange={(e) => cambiarProveedor(e.target.value)} aria-label="Proveedor de IA">
+          <option value="anthropic">Anthropic (Claude)</option>
+          <option value="xai">xAI (Grok)</option>
         </select>
+        {proveedor === "anthropic" ? (
+          <>
+            <input className="fi sm" type="password" autoComplete="off" placeholder="API key de console.anthropic.com" style={{ marginBottom: 7 }} value={anthropicKey} onChange={(e) => setAnthropicKey(e.target.value)} />
+            <select className="fi sm" value={modelo} onChange={(e) => setModelo(e.target.value)}>
+              <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 (recomendado, más económico)</option>
+              <option value="claude-sonnet-5">Claude Sonnet 5 (más capaz, mayor costo)</option>
+            </select>
+          </>
+        ) : (
+          <>
+            <input className="fi sm" type="password" autoComplete="off" placeholder="API key de console.x.ai (empieza con xai-)" style={{ marginBottom: 7 }} value={xaiKey} onChange={(e) => setXaiKey(e.target.value)} />
+            <input className="fi sm" list="modelos-grok" placeholder="Modelo Grok" value={modelo} onChange={(e) => setModelo(e.target.value)} />
+            <datalist id="modelos-grok">
+              {[...new Set([MODELO_XAI_DEF, "grok-4-1-fast-reasoning", ...modelosXai])].map((m) => <option key={m} value={m} />)}
+            </datalist>
+            <div className="txt-muted" style={{ marginTop: 5 }}>Recomendado: «{MODELO_XAI_DEF}» (rápido y con herramientas). Usa «Probar conexión» para ver los modelos que tu cuenta tiene disponibles.</div>
+          </>
+        )}
+        <div className="flex gap8 items-c" style={{ marginTop: 9, flexWrap: "wrap" }}>
+          <button type="button" className="btn-sm sec" onClick={probarConexion} disabled={probando}>{probando ? "Probando…" : "🔌 Probar conexión"}</button>
+          {prueba && <span className="txt-sm fw6" style={{ color: prueba.ok ? "var(--green)" : "var(--rose)" }}>{prueba.texto}</span>}
+        </div>
       </div>
 
       <div className="fl">

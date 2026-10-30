@@ -1,4 +1,5 @@
 import { useState, lazy, Suspense } from "react";
+import ErrorBoundary from "./components/ErrorBoundary";
 import { useAuth } from "./lib/AuthContext";
 import { navSectionsForRole } from "./lib/modules";
 import Login from "./pages/Login";
@@ -116,7 +117,7 @@ function Shell() {
             <div style={{ padding: 40, color: "var(--muted)" }}>Cargando módulo…</div>
           }
         >
-          {renderMod()}
+          <ErrorBoundary key={mod}>{renderMod()}</ErrorBoundary>
         </Suspense>
       </main>
     </div>

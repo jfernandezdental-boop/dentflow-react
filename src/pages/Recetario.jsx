@@ -70,7 +70,7 @@ ${f.indicaciones ? `<div class="box"><b>Indicaciones generales:</b><br>${escHtml
 ${f.observaciones ? `<div class="box"><b>Observaciones / próxima cita:</b><br>${escHtml(f.observaciones).replace(/\n/g, "<br>")}</div>` : ""}
 <div class="sg"><div>${escHtml(f.profesional || "Profesional")}<br><small>${escHtml(f.registro ? "Registro: " + f.registro : "")}</small></div></div>
 <div class="ft">Validez de la receta: ${escHtml(f.validez)} desde la fecha de emisión.</div>
-<script>window.onload=function(){setTimeout(function(){window.print()},250)}<\/script></body></html>`;
+<script>window.onload=function(){setTimeout(function(){window.print()},250)}</script></body></html>`;
 }
 
 function Preview({ f, pac, establecimiento, telefono }) {
